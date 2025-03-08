@@ -104,55 +104,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="question-1" class="level2">
 <h2 class="anchored" data-anchor-id="question-1">Question 1</h2>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
-
-Attaching package: 'magrittr'
-
-
-The following object is masked from 'package:purrr':
-
-    set_names
-
-
-The following object is masked from 'package:tidyr':
-
-    extract
-
-
-── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──
-
-✔ broom        1.0.7     ✔ rsample      1.2.1
-✔ dials        1.3.0     ✔ tune         1.2.1
-✔ infer        1.0.7     ✔ workflows    1.1.4
-✔ modeldata    1.4.0     ✔ workflowsets 1.1.0
-✔ parsnip      1.2.1     ✔ yardstick    1.3.2
-✔ recipes      1.1.0     
-
-── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
-✖ scales::discard()     masks purrr::discard()
-✖ magrittr::extract()   masks tidyr::extract()
-✖ dplyr::filter()       masks stats::filter()
-✖ recipes::fixed()      masks stringr::fixed()
-✖ dplyr::lag()          masks stats::lag()
-✖ magrittr::set_names() masks purrr::set_names()
-✖ yardstick::spec()     masks readr::spec()
-✖ recipes::step()       masks stats::step()
-• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset<span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"dataset.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>prop<span class="ot">&lt;-</span> dataset<span class="sc">$</span>Y<span class="sc">/</span>dataset<span class="sc">$</span>N</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dataset<span class="sc">$</span>prop <span class="ot">&lt;-</span> prop</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -163,25 +120,40 @@ $ N    &lt;int&gt; 184, 138, 73, 162, 55, 187, 174, 80, 98, 98, 103, 118, 67, 10
 $ Y    &lt;int&gt; 13, 9, 7, 13, 3, 13, 24, 5, 10, 4, 8, 6, 4, 15, 29, 5, 4, 5, 22, …
 $ prop &lt;dbl&gt; 0.07065217, 0.06521739, 0.09589041, 0.08024691, 0.05454545, 0.069…</code></pre>
 </div>
+</div>
+<ul>
+<li>we might remove this, not sure if we need it.</li>
+</ul>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dataset, </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Year , <span class="at">y =</span> prop)) <span class="sc">+</span> </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+</div>
+<ul>
+<li>This was our first plot and it shows a slight decline in proportion. (we might also remove if we don’t need it)</li>
+</ul>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dataset, <span class="fu">aes</span>(<span class="at">x=</span>Year, <span class="at">y=</span>prop))<span class="sc">+</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+</div>
+<ul>
+<li>This also shows a slight decline from 1998 to 2012, but it should be noted that there is missing data in 2006 so this may make the graph harder to interpret, but there does look like there is a slight decline over the years.</li>
+</ul>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -307,88 +279,88 @@ $ prop &lt;dbl&gt; 0.07065217, 0.06521739, 0.09589041, 0.08024691, 0.05454545, 0
 </tbody>
 </table>
 </div>
+</div>
+<ul>
+<li>We used the skim function to have a look at the histograms for the different variables. So we can see that the number of children in each IZ is normally distributed, but if we look at the histogram for the Y variable, number of children susceptible to measles in a given IZ, is not normally distributed which would suggest that there is another variable which is impacting the number of susceptible children. This supports the question of interest that there was a change in children’s susceptibility to measles overtime.</li>
+</ul>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset<span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_correlation</span>(<span class="at">formula=</span> prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         cor
 1 -0.3553176</code></pre>
 </div>
+</div>
+<ul>
+<li>We calculated the correlation coefficient. It produced a value of -0.3553176. Whilst this is a weaker result, it is not insignificant, and does suggest there is a decreasing relationship. Again, this supports the idea that susceptibility has decreased over the years.</li>
+</ul>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">%$%</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">boxplot</span>(prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<ul>
+<li>So we can see also from the box plot that the proportion of susceptible children is decreasing over the years. In particular, we can see that the mean is decreasing slowly overtime, and in the later years it shows that there is less variation in the number of susceptible children, therefore it is becoming more steady and consistent.</li>
+</ul>
 </section>
 <section id="question-2" class="level2">
 <h2 class="anchored" data-anchor-id="question-2">Question 2</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataset_before<span class="ot">&lt;-</span> <span class="fu">subset</span>(dataset, dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">1998</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span> <span class="dv">2000</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2002</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dataset_after<span class="ot">&lt;-</span> <span class="fu">subset</span>(dataset, dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2004</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span> <span class="dv">2006</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2008</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2010</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2012</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset_before)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   303 obs. of  4 variables:
- $ Year: int  1998 1998 1998 1998 1998 1998 1998 1998 1998 1998 ...
- $ N   : int  184 138 73 162 55 187 174 80 98 98 ...
- $ Y   : int  13 9 7 13 3 13 24 5 10 4 ...
- $ prop: num  0.0707 0.0652 0.0959 0.0802 0.0545 ...</code></pre>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dataset_after<span class="ot">&lt;-</span> <span class="fu">subset</span>(dataset, dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2004</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span> <span class="dv">2006</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2008</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2010</span> <span class="sc">|</span> dataset<span class="sc">$</span>Year<span class="sc">==</span><span class="dv">2012</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset_after)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   404 obs. of  4 variables:
- $ Year: int  2004 2004 2004 2004 2004 2004 2004 2004 2004 2004 ...
- $ N   : int  146 119 93 149 54 153 159 57 88 87 ...
- $ Y   : int  13 7 6 11 3 13 8 4 8 4 ...
- $ prop: num  0.089 0.0588 0.0645 0.0738 0.0556 ...</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   707 obs. of  4 variables:
- $ Year: int  1998 1998 1998 1998 1998 1998 1998 1998 1998 1998 ...
- $ N   : int  184 138 73 162 55 187 174 80 98 98 ...
- $ Y   : int  13 9 7 13 3 13 24 5 10 4 ...
- $ prop: num  0.0707 0.0652 0.0959 0.0802 0.0545 ...</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dataset_before<span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_correlation</span>(<span class="at">formula=</span> prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>So we can analyse the difference before and after the articles retraction in 2004, we have split the dataset into two smaller ones, one containing the data before, and one containing the data after the retraction.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dataset_before<span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_correlation</span>(<span class="at">formula=</span> prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         cor
 1 0.01648565</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dataset_after<span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_correlation</span>(<span class="at">formula=</span> prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dataset_after<span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_correlation</span>(<span class="at">formula=</span> prop<span class="sc">~</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         cor
 1 -0.3870859</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dataset_before, </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Year , <span class="at">y =</span> prop)) <span class="sc">+</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>We calculated the correlation coefficient for the data before and after the retraction. We can very clearly see from the correlation coefficients that after the retraction that the was a significant change in relationship, as before there seemed to be no relationship as the value was 0.01648565, compared to after where the value was -0.3870859, which is clear difference, showing a decreasing relationship.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dataset_before, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Year , <span class="at">y =</span> prop)) <span class="sc">+</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dataset_after, </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Year , <span class="at">y =</span> prop)) <span class="sc">+</span> </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> dataset_after, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Year , <span class="at">y =</span> prop)) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Group_10_Analysis_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<ul>
+<li>Finally, we can see that in the data before the retraction there is not much a trend between year and proportion, it seems fairly constant. When we compare this to the graph for after the retraction we can see a trend, which is a decreasing trend.</li>
+</ul>
 </section>
 </section>
 

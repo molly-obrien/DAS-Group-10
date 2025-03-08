@@ -13,20 +13,23 @@ editor: visual
 ```{r}
 #| echo: false
 #| eval: true
+#| message: false
+#| warning: false
 library(tidyverse)
 library(magrittr)
 library(tidymodels)
 library(moderndive)
 library(skimr)
 
+```
+
+```{r}
 dataset<- read.csv("dataset.csv")
 
 prop<- dataset$Y/dataset$N
 
 dataset$prop <- prop
 ```
-
-## 
 
 ```{r}
 #| echo: true 
