@@ -67,3 +67,32 @@ $$
 $$
 
 -   $\beta_{year,post2004}$ is our interaction term between our explanatory variables.
+
+Here's a visualisation of our model:
+
+```{r}
+
+dataset$successes <- dataset$N - dataset$Y  
+
+model_bin <- glm(cbind(Y, successes) ~ Year + Post2004 + Year:Post2004, 
+             family = binomial, data = dataset)
+
+summary(model_bin)
+```
+
+However, we must be careful to avoid modelling with overdispersion. The overdispersion ratio - \$ \\hat{\\phi} = \\frac{\\text{residual deviance}}{\\text{df}\_{\\text{residual deviance}}} \$ - gives us information on the overdispersion.
+
+```{r}
+overdispersion_ratio <- summary(model_bin)$deviance / summary(model_bin)$df.residual
+print(overdispersion_ratio)
+```
+
+This value is far greater than 1. This suggests that we have heavy overdispersion and we should adjust our model.
+
+```{r}
+model_quasi <- glm(cbind(Y, successes) ~ Year * Post2004, 
+                   family = quasibinomial, data = dataset)
+summary(model_quasi)
+```
+
+Displayed above is our quasi-binomial model. The standard errors have changed to so that our intervals for significance are adjusted for overdispersion.
