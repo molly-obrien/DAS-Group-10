@@ -1,26 +1,69 @@
 ---
 title: "Group_10_Analysis"
-format: html
+format: 
+ html: 
+  embed-resources: true
 editor: visual
+execute: 
+ echo: false
+ eval: true
+ warning: false
+ error: false
+ message: false
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# Formative Data Analysis
 
 ```{r}
-1 + 1
+setwd("C:\\Users\\Theo\\OneDrive - University of Glasgow\\Desktop\\DA Group data")
+dataset <- read.csv("DAProject16.csv")
+library(tidymodels)
+library(parsnip)
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+
+dataset <- dataset |> mutate(proportions = Y/N)
+dataset$Post2004 <- ifelse(dataset$Year >= 2004, 1, 0)
+
 ```
 
-You can add options to executable code like this
+Examining our first question of interest: "Did Glasgow exhibit a change in measles susceptibility following the retraction of the Wakefield article?"
 
-```{r}
-#| echo: false
-2 * 2
-```
+We must model our data to include an indicator variable examining the difference between the number of people susceptible to measles before and after the article retraction.
 
-The `echo: false` option disables the printing of code (only output is displayed).
+It's appropriate to model this data under a binomial assumption as long as we specify our successes/ failures appropriately:
+
+We fit the GLM:
+
+$$
+g(p_i) = logit(p_i) = \alpha + \beta_{year} \cdot year + \beta_{post2004} \cdot \mathbb{I}_{post2004} + \beta_{year,post2004} \cdot year \cdot \mathbb{I}_{post2004}
+$$
+
+So that,
+
+$$
+g(p_i) = logit(p_i) = \begin{cases} 
+\alpha + \beta_{year} \cdot year {\text{,  for years before 2004}} \\
+\alpha + \beta_{year} \cdot year + \beta_{post2004} + \beta_{year,post2004} \cdot year {\text{,  otherwise}}
+\end{cases}
+$$
+
+This is where:
+
+-   $\alpha$ is our model intercept.
+
+-   $\beta_{year}$ is our model coefficient for 'Year' (in terms of an increase/decrease in log-odds).
+
+-   $\beta_{post2004}$ is our beta coefficient for the log-odds of susceptibility for years after 2004 compared to before.
+
+-   $\mathbb{I}_{post2004}$ is our indicator function where:
+
+$$
+\mathbb{I}_{post2004} = \begin{cases}
+1 ~ \text{if the observation is taken post-2004} \\
+0 ~ \text{otherwise}
+\end{cases}
+$$
+
+-   $\beta_{year,post2004}$ is our interaction term between our explanatory variables.
