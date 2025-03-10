@@ -1,7 +1,17 @@
 ---
 title: "Group_10_Analysis"
-format: html
+format: 
+ html:
+  embed-resources: true
 editor: visual
+editor_options: 
+  chunk_output_type: console
+execute:
+ echo: false
+ eval: true
+ message: false
+ warning: false
+ error: false
 ---
 
 ## Data Analysis Presentation
@@ -20,7 +30,11 @@ library(magrittr)
 library(tidymodels)
 library(moderndive)
 library(skimr)
-
+library(gt)
+library(patchwork)
+library(ggplot2)
+library(gridExtra)
+library(grid)
 ```
 
 ```{r}
@@ -32,7 +46,7 @@ dataset$prop <- prop
 ```
 
 ```{r}
-#| echo: true 
+#| echo: false 
 #| eval: true
 glimpse(dataset)
 
@@ -42,7 +56,6 @@ glimpse(dataset)
 -   we might remove this, not sure if we need it.
 
 ```{r}
-#| echo: true 
 #| eval: true
 ggplot(data = dataset, 
        mapping = aes(x = Year , y = prop)) + 
@@ -54,7 +67,6 @@ ggplot(data = dataset,
 -   This was our first plot and it shows a slight decline in proportion. (we might also remove if we don't need it)
 
 ```{r}
-#| echo: true 
 #| eval: true
 ggplot(dataset, aes(x=Year, y=prop))+
   geom_jitter()
@@ -65,7 +77,6 @@ ggplot(dataset, aes(x=Year, y=prop))+
 -   This also shows a slight decline from 1998 to 2012, but it should be noted that there is missing data in 2006 so this may make the graph harder to interpret, but there does look like there is a slight decline over the years.
 
 ```{r}
-#| echo: true 
 #| eval: true
 
 skim(dataset)
@@ -76,7 +87,6 @@ skim(dataset)
 -   We used the skim function to have a look at the histograms for the different variables. So we can see that the number of children in each IZ is normally distributed, but if we look at the histogram for the Y variable, number of children susceptible to measles in a given IZ, is not normally distributed which would suggest that there is another variable which is impacting the number of susceptible children. This supports the question of interest that there was a change in children's susceptibility to measles overtime.
 
 ```{r}
-#| echo: true 
 #| eval: true
 dataset|>
   get_correlation(formula= prop~Year)
@@ -86,7 +96,6 @@ dataset|>
 -   We calculated the correlation coefficient. It produced a value of -0.3553176. Whilst this is a weaker result, it is not insignificant, and does suggest there is a decreasing relationship. Again, this supports the idea that susceptibility has decreased over the years.
 
 ```{r}
-#| echo: true 
 #| eval: true
 
 dataset %$% 
@@ -98,22 +107,21 @@ dataset %$%
 ## Question 2
 
 ```{r}
-#| echo: true 
 #| eval: true
 
 dataset_before<- subset(dataset, dataset$Year==1998 | dataset$Year== 2000 | dataset$Year==2002)
 
 dataset_after<- subset(dataset, dataset$Year==2004 | dataset$Year== 2006 | dataset$Year==2008 | dataset$Year==2010 | dataset$Year==2012)
 
-
-
-
+p1 <- dataset_before |> slice(1:3, .by = Year) |> gt(caption = "Data before retraction")
+p2 <- dataset_after |> slice(1:3, .by = Year) |> gt(caption = "Data after retraction")
+p1
+p2
 ```
 
 -   So we can analyse the difference before and after the articles retraction in 2004, we have split the dataset into two smaller ones, one containing the data before, and one containing the data after the retraction.
 
 ```{r}
-#| echo: true 
 #| eval: true
 
 dataset_before|>
@@ -139,4 +147,4 @@ ggplot(data = dataset_after,
 
 ```
 
--    Finally, we can see that in the data before the retraction there is not much a trend between year and proportion, it seems fairly constant. When we compare this to the graph for after the retraction we can see a trend, which is a decreasing trend.
+-   Finally, we can see that in the data before the retraction there is not much a trend between year and proportion, it seems fairly constant. When we compare this to the graph for after the retraction we can see a trend, which is a decreasing trend.
