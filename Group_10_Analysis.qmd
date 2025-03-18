@@ -1,10 +1,8 @@
 ---
-title: "Group_10_Analysis"
+title: "Data Analysis Report- group 10"
 format: html
 editor: visual
 ---
-
-## Data Analysis Presentation
 
 # Exploratory Data Analysis {#EDA}
 
@@ -39,7 +37,7 @@ dataset$prop <- prop
 ```{r}
 #| echo: false
 #| eval: true
-#| fig-cap: Scatterplot of Proportion of susceptible children to measles over the period 1998 to 2012
+#| fig-cap: Scatterplot of Proportion of susceptible children to measles from 1998 to 2012
 #| label: fig-1
 
 ggplot(data = dataset, 
@@ -101,17 +99,7 @@ gt(cor)
 
 ggplot(dataset, aes(x=Year, y=prop, group=Year))+
   geom_boxplot()+
-    labs(x="Year", y="Proportion", title="Scatterplot of Proportion of susceptible children to measles over the period 1998 to 2012") 
-
-
-dataset %$% 
-  boxplot(prop~Year)
-
-boxplot(dataset$prop~dataset$Year)
-
-
-
-
+    labs(x="Year", y="Proportion", title="Boxplot of Proportion of susceptible children to measles over the period 1998 to 2012") 
 
 ```
 
@@ -144,11 +132,13 @@ cor_before<- dataset_before|>
 
 cor_after<- dataset_after|>
   get_correlation(formula= prop~Year)
-
-gt(cor_before)
-gt(cor_after)
-
 ```
+
+| Correlation before | Correlation after |
+|--------------------|-------------------|
+| 0.01648565         | -0.3870859        |
+
+: Correlations before and after the retraction
 
 -   We calculated the correlation coefficient for the data before and after the retraction. We can very clearly see from the correlation coefficients that after the retraction that the was a significant change in relationship, as before there seemed to be no relationship as the value was 0.01648565, compared to after where the value was -0.3870859, which is clear difference, showing a decreasing relationship.
 
@@ -179,7 +169,7 @@ ggplot(data = dataset_after, mapping = aes(x = Year , y = prop)) + geom_jitter()
 ```{r}
 #| echo: false
 #| eval: true
-#| fig-cap: figure caption
+#| fig-cap: Boxplot of Proportion of susceptible children to measles over the period 1998 to 2004, and 2004 to 2012
 #| label: fig-6
 
 boxplot_before<- ggplot(dataset_before, aes(y = prop)) +
@@ -187,13 +177,6 @@ boxplot_before<- ggplot(dataset_before, aes(y = prop)) +
   labs( y = "Prop", 
        title = "before")
 
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| fig-cap: figure caption
-#| label: fig-7
 boxplot_after<- ggplot(dataset_after, aes(y = prop)) +
   geom_boxplot() +
   labs(y = "Prop", 
@@ -201,13 +184,16 @@ boxplot_after<- ggplot(dataset_after, aes(y = prop)) +
 
 grid.arrange(boxplot_before, boxplot_after, ncol = 2, nrow = 1)
 
+
 ```
 
--   We can see that the mean is lower after the retraction of the article in 2004, @fig-7, than the mean before the retraction, before 2004, @fig-6. In addition we can see that the range of data is narrower after the retraction showing that the results were less varied and more consistent. This would also suggest that the proportion of children that are susceptible is becoming more steady and consistent.
+-   We can see that the mean is lower after the retraction of the article in 2004,, than the mean before the retraction, before 2004, @fig-6. In addition we can see that the range of data is narrower after the retraction showing that the results were less varied and more consistent. This would also suggest that the proportion of children that are susceptible is becoming more steady and consistent.
 
 ```{r}
 #| echo: false
 #| eval: true
+#| fig-cap: Scatterplot (jittered) with line of best fit, of Proportion of susceptible children to measles over the period 1998 to 2004, and 2004 to 2012
+#| label: fig-7
 
 jitplot_before<- ggplot(dataset_before, aes(x = Year, y = prop)) +
   geom_jitter()+
@@ -218,29 +204,8 @@ jitplot_after<- ggplot(dataset_after, aes(x = Year, y = prop)) +
   geom_smooth(method = "lm", se = FALSE)
 
 
-
-
 grid.arrange(jitplot_before, jitplot_after, ncol = 2, nrow = 1)
 
 ```
 
--   Before 2004 we can see there is no significant trend between year and the proportion of children susceptible, wheras after this we can see a decreasing linear trend between year and proportion of children susceptible to measles.
-
-```{r}
-#| echo: false
-#| eval: true
-
-cor_before<- dataset_before|>
-  get_correlation(formula= prop~Year)
-
-
-cor_after<- dataset_after|>
-  get_correlation(formula= prop~Year)
-
-```
-
-| Correlation before | Correlation after |
-|--------------------|-------------------|
-| 0.01648565         | -0.3870859        |
-
-: Correlations before and after
+-   Before 2004 we can see there is no significant trend between year and the proportion of children susceptible, wheras after this we can see a decreasing linear trend between year and proportion of children susceptible to measles, @fig-7.
