@@ -138,3 +138,209 @@ check_model(centered_model, panel = TRUE)
 As we can see - for our Binned Residuals check - most points like within our error bounds. Suggesting that our model predicted probabilities align fairly well with our observed data. For our influencial observaitons, all points lie within our region suggesting no major influencial outliers. We have some high collinearity, specifically for Year variable and our interaction. Suggesting that our uncertainty could be fairly high in our estimates. Finally, our residuals appear to be normally distributed.
 
 Overall our assumptions seem quite reasonable for using this model on our data.
+
+# Exploratory Data Analysis {#EDA}
+
+## Question 1
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tidymodels)
+library(moderndive)
+library(skimr)
+library(magrittr)
+library(gapminder)
+library(gridExtra)
+library(gt)
+```
+
+```{r}
+#| echo: false
+
+dataset<- read.csv("dataset.csv")
+
+prop<- dataset$Y/dataset$N
+
+dataset$prop <- prop
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Scatterplot of Proportion of susceptible children to measles from 1998 to 2012
+#| label: fig-1
+
+ggplot(data = dataset, 
+       mapping = aes(x = Year , y = prop))+ 
+         labs(x="Year", y="Proportion", title="Scatterplot of Proportion of susceptible children to measles over the period 1998 to 2012") +
+  geom_point()
+
+
+```
+
+-   @fig-1 shows a slight decline in proportion. However there seems to be a lot of overlapping points so we will jitter it to get a better look at the relationship.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Scatterplot (jittered) of Proportion of susceptible children to measles over the period 1998 to 2012
+#| label: fig-2
+
+
+
+ggplot(dataset, aes(x=Year, y=prop))+
+  geom_jitter()+
+  labs(x="Year", y="Proportion", title="Scatterplot of Proportion of susceptible children to measles over the period 1998 to 2012") 
+
+
+```
+
+-   Plotting the jittered scatter plot @fig-2 shows a clearer decline in proportion of susceptible children from 1998 to 2012, but it should be noted that there is missing data in 2006 so this may make the graph harder to interpret. In addition we can see that towards the end of the time period there is less variance in the proportion of susceptible children, and we will investigate this further.
+
+```{r}
+#| echo: false
+#| eval: true
+
+skim(dataset)
+
+
+```
+
+-   We used the skim function to have a look at the histograms for the different variables. So we can see that the number of children in each IZ is normally distributed, but if we look at the histogram for the Y variable, number of children susceptible to measles in a given IZ, is not normally distributed which would suggest that there is another variable which is impacting the number of susceptible children. This supports the question of interest that there was a change in children's susceptibility to measles overtime.
+
+```{r}
+#| echo: false
+#| eval: true
+
+cor<- dataset|>
+  get_correlation(formula= prop~Year)
+
+gt(cor)
+
+```
+
+-   We calculated the correlation coefficient. It produced a value of -0.3553176. Whilst this is a weaker result, it is not insignificant, and does suggest there is a decreasing relationship. Again, this supports the idea that susceptibility has decreased over the years.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Boxplot of Proportion of susceptible children to measles over the period 1998 to 2012
+#| label: fig-3
+
+ggplot(dataset, aes(x=Year, y=prop, group=Year))+
+  geom_boxplot()+
+    labs(x="Year", y="Proportion", title="Boxplot of Proportion of susceptible children to measles over the period 1998 to 2012") 
+
+```
+
+-   So we can see also from the @fig-3 that the proportion of susceptible children is decreasing over the years. In particular, we can see that the mean is decreasing slowly overtime, and in the later years it shows that there is less variation in the number of susceptible children, therefore it is becoming more steady and consistent.
+
+## Question 2
+
+```{r}
+#| echo: false
+#| eval: true
+
+dataset_before<- subset(dataset, dataset$Year==1998 | dataset$Year== 2000 | dataset$Year==2002)
+
+dataset_after<- subset(dataset, dataset$Year==2004 | dataset$Year== 2006 | dataset$Year==2008 | dataset$Year==2010 | dataset$Year==2012)
+
+
+
+
+```
+
+-   So we can analyse the difference before and after the articles retraction in 2004, we have split the dataset into two smaller ones, one containing the data before, and one containing the data after the retraction.
+
+```{r}
+#| echo: false
+#| eval: true
+
+
+cor_before<- dataset_before|>
+  get_correlation(formula= prop~Year)
+
+cor_after<- dataset_after|>
+  get_correlation(formula= prop~Year)
+```
+
+| Correlation before | Correlation after |
+|--------------------|-------------------|
+| 0.01648565         | -0.3870859        |
+
+: Correlations before and after the retraction
+
+-   We calculated the correlation coefficient for the data before and after the retraction. We can very clearly see from the correlation coefficients that after the retraction that the was a significant change in relationship, as before there seemed to be no relationship as the value was 0.01648565, compared to after where the value was -0.3870859, which is clear difference, showing a decreasing relationship.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Scatterplot (jittered) of Proportion of susceptible children to measles over the period 1998 to 2004
+#| label: fig-4
+
+ggplot(data = dataset_before, 
+       mapping = aes(x = Year , y = prop)) + 
+  geom_jitter()
+
+
+
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Scatterplot (jittered) of Proportion of susceptible children to measles over the period 2004 to 2012
+#| label: fig-5
+ggplot(data = dataset_after, mapping = aes(x = Year , y = prop)) + geom_jitter()
+```
+
+-   Finally, we can see that in the data before the retraction @fig-4 there is not much a trend between year and proportion, it seems fairly constant. When we compare this to the graph for after the retraction @fig-5 we can see a trend, which is a decreasing trend.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Boxplot of Proportion of susceptible children to measles over the period 1998 to 2004, and 2004 to 2012
+#| label: fig-6
+
+boxplot_before<- ggplot(dataset_before, aes(y = prop)) +
+  geom_boxplot() +
+  labs( y = "Prop", 
+       title = "before")
+
+boxplot_after<- ggplot(dataset_after, aes(y = prop)) +
+  geom_boxplot() +
+  labs(y = "Prop", 
+       title = "after")
+
+grid.arrange(boxplot_before, boxplot_after, ncol = 2, nrow = 1)
+
+
+```
+
+-   We can see that the mean is lower after the retraction of the article in 2004,, than the mean before the retraction, before 2004, @fig-6. In addition we can see that the range of data is narrower after the retraction showing that the results were less varied and more consistent. This would also suggest that the proportion of children that are susceptible is becoming more steady and consistent.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-cap: Scatterplot (jittered) with line of best fit, of Proportion of susceptible children to measles over the period 1998 to 2004, and 2004 to 2012
+#| label: fig-7
+
+jitplot_before<- ggplot(dataset_before, aes(x = Year, y = prop)) +
+  geom_jitter()+
+  geom_smooth(method = "lm", se = FALSE)
+
+jitplot_after<- ggplot(dataset_after, aes(x = Year, y = prop)) +
+  geom_jitter()+
+  geom_smooth(method = "lm", se = FALSE)
+
+
+grid.arrange(jitplot_before, jitplot_after, ncol = 2, nrow = 1)
+
+```
+
+-   Before 2004 we can see there is no significant trend between year and the proportion of children susceptible, wheras after this we can see a decreasing linear trend between year and proportion of children susceptible to measles, @fig-7.
