@@ -14,6 +14,9 @@ execute:
 
 # Data Analysis Presentation
 
+#Introduction
+ Measles is a highly contagious disease, and is a significant risk to the public, especially for children that are left unvaccinated. In 1998, the release of the Wakefield Article, which had detailed a link between the MMR vaccine and an increased risk of autism, was released. This in turn resulted in a drop in vaccination rates to roughly 80% in 2003 over the UK. The article was somewhat withdrawn in 2004, after studies found the two were falsely linked, and in fact were not associated.  
+This study investigates the measles susceptibility of school children across Edinburgh's 101 intermediate zones (IZ’s) between 1998 and 2012. It aims to discover whether the retraction of the Wakefield article had any effect on Edinburgh's measle susceptibility, and if so, determine if these changes occurred in 2004, coinciding with the article retraction. This will hopefully indicate the importance of accuracy in article information, and why it is crucial that medical articles are reliable, so that overall public health is not at risk. 
 
 # Exploratory Data Analysis {#EDA}
 
@@ -346,3 +349,8 @@ check_model(centered_model, panel = TRUE)
 As we can see - for our Binned Residuals check - most points like within our error bounds. Suggesting that our model predicted probabilities align fairly well with our observed data. For our influencial observaitons, all points lie within our region suggesting no major influencial outliers. We have some high collinearity, specifically for Year variable and our interaction. Suggesting that our uncertainty could be fairly high in our estimates. Finally, our residuals appear to be normally distributed.
 
 Overall our assumptions seem quite reasonable for using this model on our data.
+
+#Conclusion
+
+We can see throughout the analyis that it highlights the sigificant impact spreading misinformation has on public health, and how vital it is for information to be correct, so the public don’t jump to conclusions and in doing so negatively affect their health. Due to the negative value for our coefficient, with p-value <0.05, we can see that there is a significant decrease in measles susceptibility, after the Wakefield Article was withdrawn. We can also see that due to the less significant coefficient, the change in measles susceptibility was a long-term one, and did not occur instantly in 2004. This is likely to be expected, as the public take time to adjust to new pieces of research, especially ones that go against previous beliefs that have been set. It is also worth noting that the research was only partially retracted in 2004, and not fully discredited until 2010, hence suggesting a more long-term change is likely. 
+It is also worth noting the models pseudo-R^2 indicates a moderate fit of the data, and as such we could look to improve the model by considering other variables that could have a significant effect on the date, such as the location of the IZ. People are likely to follow their peers, and people act on decisions related to political/religious beliefs, and as these can vary quite significantly from location to location around a city, this could be a crucial variable that could overall influence the measles susceptibility across Edinburgh. 
