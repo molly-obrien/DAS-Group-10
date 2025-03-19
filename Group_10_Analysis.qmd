@@ -14,130 +14,6 @@ execute:
 
 # Data Analysis Presentation
 
-# Formative Data Analysis
-
-```{r}
-setwd("C:\\Users\\Theo\\OneDrive - University of Glasgow\\Desktop\\DA Group data")
-dataset <- read.csv("DAProject16.csv")
-library(tidymodels)
-library(parsnip)
-library(magrittr)
-library(dplyr)
-library(ggplot2)
-
-dataset <- dataset |> mutate(proportions = Y/N)
-dataset$Post2004 <- ifelse(dataset$Year >= 2004, 1, 0)
-
-```
-
-We must model our data to include an indicator variable examining the difference between the number of people susceptible to measles before and after the article retraction.
-
-It's appropriate to model this data under a binomial assumption as long as we specify our successes/ failures appropriately:
-
-We fit the GLM:
-
-$$
-g(p_i) = logit(p_i) = \alpha + \beta_{year} \cdot year + \beta_{post2004} \cdot \mathbb{I}_{post2004} + \beta_{year,post2004} \cdot year \cdot \mathbb{I}_{post2004}
-$$
-
-So that,
-
-$$
-g(p_i) = logit(p_i) = \begin{cases} 
-\alpha + \beta_{year} \cdot year {\text{,  for years before 2004}} \\
-\alpha + \beta_{year} \cdot year + \beta_{post2004} + \beta_{year,post2004} \cdot year {\text{,  otherwise}}
-\end{cases}
-$$
-
-This is where:
-
--   $\alpha$ is our model intercept.
-
--   $\beta_{year}$ is our model coefficient for 'Year' (in terms of an increase/decrease in log-odds).
-
--   $\beta_{post2004}$ is our beta coefficient for the log-odds of susceptibility for years after 2004 compared to before.
-
--   $\mathbb{I}_{post2004}$ is our indicator function where:
-
-$$
-\mathbb{I}_{post2004} = \begin{cases}
-1 ~ \text{if the observation is taken post-2004} \\
-0 ~ \text{otherwise}
-\end{cases}
-$$
-
--   $\beta_{year,post2004}$ is our interaction term between our explanatory variables.
-
-Here's a visualisation of our model:
-
-```{r}
-
-dataset$successes <- dataset$N - dataset$Y  
-
-model_bin <- glm(cbind(Y, successes) ~ Year + Post2004 + Year:Post2004, 
-             family = binomial, data = dataset)
-
-summary(model_bin)
-```
-
-However, we must be careful to avoid modelling with overdispersion. The overdispersion ratio - $\hat{\phi} = \frac{\text{residual deviance}}{\text{df}_{\text{residual deviance}}}$ - gives us information on the overdispersion.
-
-```{r}
-overdispersion_ratio <- summary(model_bin)$deviance / summary(model_bin)$df.residual
-print(overdispersion_ratio)
-```
-
-This value is far greater than 1. This suggests that we have heavy overdispersion and we should adjust our model.
-
-```{r}
-model_quasi <- glm(cbind(Y, successes) ~ Year * Post2004, 
-                   family = quasibinomial, data = dataset)
-summary(model_quasi)
-```
-
-Displayed above is our quasi-binomial model. The standard errors have changed to so that our intervals for significance are adjusted for overdispersion.
-
-But, before we infer from our model, we have an extremely large coefficient for our 'Post2004' variable. It's likely that - because of the scale of our 'Year' variable - this caused some interpretability issues.
-
-Taking years before 2004 to be negative and years post 2004 to be positive:
-
-```{r}
-dataset <- dataset |> mutate(year_centered = Year - 2004)
-centered_model <- glm(cbind(Y, successes) ~ year_centered * Post2004, 
-                        family = quasibinomial, data = dataset)
-summary(centered_model)
-```
-
-Here our results are centered and easier to interpret.
-
-To answer our first question: "Did Edinburgh exhibit a change in measles susceptibility following the retraction of the Wakefield article?" we examine our 'year_centered:Post2004' coefficient. Our coefficient is highly significant and negative, indicating a significant decrease in the log odds of susceptibility. Suggesting that there is actually a decrease in measles susceptibility after the retraction of the Wakefield article post 2004.
-
-For our second question: "Did the change, if any, in measles susceptibility occur in 2004 alongside the articles’ retraction?" the answer appears to be no. Given our 'Post2004' variable isn't significant. We can deduce that there existed no immediate jump in susceptibility in measles after the retraction. The change progressed - long term - afterwards.
-
-Pseudo $R^2$ gives us a measure of model fit.
-
-$$
-R^2 = 1 - \frac{\text{Residual deviance}}{\text{Null deviance}}
-$$
-
-```{r}
-R2_McFadden <- 1 - (1283.6 / 1596.0)
-print(R2_McFadden)
-
-```
-
-Therefore, our model explains 19.6% of variation in measles susceptibility. This is a weak to moderate fit. However, because of the complication within the modelling for our centered variable, indicator variable and our overdispersion this is a reasonable model to use.
-
-Here are our diagnostic plots:
-
-```{r}
-library(performance)
-check_model(centered_model, panel = TRUE)
-```
-
-As we can see - for our Binned Residuals check - most points like within our error bounds. Suggesting that our model predicted probabilities align fairly well with our observed data. For our influencial observaitons, all points lie within our region suggesting no major influencial outliers. We have some high collinearity, specifically for Year variable and our interaction. Suggesting that our uncertainty could be fairly high in our estimates. Finally, our residuals appear to be normally distributed.
-
-Overall our assumptions seem quite reasonable for using this model on our data.
 
 # Exploratory Data Analysis {#EDA}
 
@@ -344,3 +220,129 @@ grid.arrange(jitplot_before, jitplot_after, ncol = 2, nrow = 1)
 ```
 
 -   Before 2004 we can see there is no significant trend between year and the proportion of children susceptible, wheras after this we can see a decreasing linear trend between year and proportion of children susceptible to measles, @fig-7.
+
+
+# Formative Data Analysis
+
+```{r}
+setwd("C:\\Users\\Theo\\OneDrive - University of Glasgow\\Desktop\\DA Group data")
+dataset <- read.csv("DAProject16.csv")
+library(tidymodels)
+library(parsnip)
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+
+dataset <- dataset |> mutate(proportions = Y/N)
+dataset$Post2004 <- ifelse(dataset$Year >= 2004, 1, 0)
+
+```
+
+We must model our data to include an indicator variable examining the difference between the number of people susceptible to measles before and after the article retraction.
+
+It's appropriate to model this data under a binomial assumption as long as we specify our successes/ failures appropriately:
+
+We fit the GLM:
+
+$$
+g(p_i) = logit(p_i) = \alpha + \beta_{year} \cdot year + \beta_{post2004} \cdot \mathbb{I}_{post2004} + \beta_{year,post2004} \cdot year \cdot \mathbb{I}_{post2004}
+$$
+
+So that,
+
+$$
+g(p_i) = logit(p_i) = \begin{cases} 
+\alpha + \beta_{year} \cdot year {\text{,  for years before 2004}} \\
+\alpha + \beta_{year} \cdot year + \beta_{post2004} + \beta_{year,post2004} \cdot year {\text{,  otherwise}}
+\end{cases}
+$$
+
+This is where:
+
+-   $\alpha$ is our model intercept.
+
+-   $\beta_{year}$ is our model coefficient for 'Year' (in terms of an increase/decrease in log-odds).
+
+-   $\beta_{post2004}$ is our beta coefficient for the log-odds of susceptibility for years after 2004 compared to before.
+
+-   $\mathbb{I}_{post2004}$ is our indicator function where:
+
+$$
+\mathbb{I}_{post2004} = \begin{cases}
+1 ~ \text{if the observation is taken post-2004} \\
+0 ~ \text{otherwise}
+\end{cases}
+$$
+
+-   $\beta_{year,post2004}$ is our interaction term between our explanatory variables.
+
+Here's a visualisation of our model:
+
+```{r}
+
+dataset$successes <- dataset$N - dataset$Y  
+
+model_bin <- glm(cbind(Y, successes) ~ Year + Post2004 + Year:Post2004, 
+             family = binomial, data = dataset)
+
+summary(model_bin)
+```
+
+However, we must be careful to avoid modelling with overdispersion. The overdispersion ratio - $\hat{\phi} = \frac{\text{residual deviance}}{\text{df}_{\text{residual deviance}}}$ - gives us information on the overdispersion.
+
+```{r}
+overdispersion_ratio <- summary(model_bin)$deviance / summary(model_bin)$df.residual
+print(overdispersion_ratio)
+```
+
+This value is far greater than 1. This suggests that we have heavy overdispersion and we should adjust our model.
+
+```{r}
+model_quasi <- glm(cbind(Y, successes) ~ Year * Post2004, 
+                   family = quasibinomial, data = dataset)
+summary(model_quasi)
+```
+
+Displayed above is our quasi-binomial model. The standard errors have changed to so that our intervals for significance are adjusted for overdispersion.
+
+But, before we infer from our model, we have an extremely large coefficient for our 'Post2004' variable. It's likely that - because of the scale of our 'Year' variable - this caused some interpretability issues.
+
+Taking years before 2004 to be negative and years post 2004 to be positive:
+
+```{r}
+dataset <- dataset |> mutate(year_centered = Year - 2004)
+centered_model <- glm(cbind(Y, successes) ~ year_centered * Post2004, 
+                        family = quasibinomial, data = dataset)
+summary(centered_model)
+```
+
+Here our results are centered and easier to interpret.
+
+To answer our first question: "Did Edinburgh exhibit a change in measles susceptibility following the retraction of the Wakefield article?" we examine our 'year_centered:Post2004' coefficient. Our coefficient is highly significant and negative, indicating a significant decrease in the log odds of susceptibility. Suggesting that there is actually a decrease in measles susceptibility after the retraction of the Wakefield article post 2004.
+
+For our second question: "Did the change, if any, in measles susceptibility occur in 2004 alongside the articles’ retraction?" the answer appears to be no. Given our 'Post2004' variable isn't significant. We can deduce that there existed no immediate jump in susceptibility in measles after the retraction. The change progressed - long term - afterwards.
+
+Pseudo $R^2$ gives us a measure of model fit.
+
+$$
+R^2 = 1 - \frac{\text{Residual deviance}}{\text{Null deviance}}
+$$
+
+```{r}
+R2_McFadden <- 1 - (1283.6 / 1596.0)
+print(R2_McFadden)
+
+```
+
+Therefore, our model explains 19.6% of variation in measles susceptibility. This is a weak to moderate fit. However, because of the complication within the modelling for our centered variable, indicator variable and our overdispersion this is a reasonable model to use.
+
+Here are our diagnostic plots:
+
+```{r}
+library(performance)
+check_model(centered_model, panel = TRUE)
+```
+
+As we can see - for our Binned Residuals check - most points like within our error bounds. Suggesting that our model predicted probabilities align fairly well with our observed data. For our influencial observaitons, all points lie within our region suggesting no major influencial outliers. We have some high collinearity, specifically for Year variable and our interaction. Suggesting that our uncertainty could be fairly high in our estimates. Finally, our residuals appear to be normally distributed.
+
+Overall our assumptions seem quite reasonable for using this model on our data.
